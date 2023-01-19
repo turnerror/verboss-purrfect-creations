@@ -10,7 +10,9 @@ const authHeader = {
     };
 
 
-type OrderFields = {
+export type OrderStatuses = "in_progress" | "cancelled" | "placed" | "shipped";
+
+export type OrderFields = {
 order_id: number,
 order_placed: string,
 product_name: string,
@@ -19,10 +21,10 @@ first_name: string,
 last_name: string,
 address: string,
 email: string,
-order_status: "in_progress" | "cancelled" | "placed" | "shipped" 
+order_status: OrderStatuses
 }
 
-type Order = {id: string, createdTime: string, fields: OrderFields};
+export type Order = {id: string, createdTime: string, fields: OrderFields};
 
 type OrderResponseSchema = {
     records: Order[],
@@ -76,7 +78,7 @@ export const getData = async () => {
         }
     }
 
-    return {total: orders.length, monthlyTotal: thisMonthOrders.length, last5: orders.slice(0, 5), inProgressTotal: inProgressOrders.length, revenue: +revenue.toFixed(2)};
+    return {total: orders.length, monthlyTotal: thisMonthOrders.length, latestOrders: orders.slice(0, 5), inProgressTotal: inProgressOrders.length, revenue: +revenue.toFixed(2)};
 }
 
 
