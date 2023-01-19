@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { getDashboardStats, Order as IOrder } from './api';
 import './App.css';
@@ -10,6 +11,8 @@ function App() {
   const [inProgressTotal, setInProgressTotal] = useState(0);
   const [revenue, setRevenue] = useState(0);
   const [latestOrders, setLatestOrders] = useState<IOrder[] | null>(null);
+
+  const createOrder = () => axios.post("/order");
 
   useEffect(() => {
     (async () => {
@@ -26,6 +29,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <button onClick={createOrder}>Create test order</button>
         <h1>Purrfect Creations Dashboard!!!</h1>
         <h2>Total Orders:  {totalOrders}</h2>
         <h2>Total Orders this Month: {monthyTotal}</h2>

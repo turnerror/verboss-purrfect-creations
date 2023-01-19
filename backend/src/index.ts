@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from "dotenv";
-import { getData } from './api';
+import { createOrder, getData } from './api';
 
 dotenv.config();
 
@@ -10,6 +10,13 @@ const port = 3001
 app.get('/dashboard-stats', async (req: Request, res: Response) => {
   console.log("request received");
   const data = await getData();
+  console.log("response sent", {data});
+  res.send(data);
+});
+
+app.post('/order', async (req: Request, res: Response) => {
+  console.log("request received");
+  const data = await createOrder();
   console.log("response sent", {data});
   res.send(data);
 });

@@ -86,3 +86,25 @@ export const getData = async () => {
     };
 }
 
+export const createOrder = async () => {
+    const newOrder: OrderFields = {
+        order_id: 1001,
+        order_placed: moment().format("2023-01-01"),
+        product_name: "i heart milk brooch",
+        price: 69.69,
+        first_name: "Frank",
+        last_name: "Bob",
+        address: "10 Downing Street",
+        email: "somerandomcrap@mail.com",
+        order_status: "in_progress",
+    };
+
+    const response  = await axios.post(base + "/Orders", {records: [{
+        fields: newOrder,
+    }]}, {headers: {...authHeader, "Content-Type": "application/json"}});
+
+    console.log({createOrderRes: response})
+
+    return response.data;
+}
+
