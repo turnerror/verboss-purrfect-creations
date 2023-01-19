@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getData, Order as IOrder } from './api';
+import { getDashboardStats, Order as IOrder } from './api';
 import './App.css';
 import { Order } from './order';
 
@@ -14,7 +14,7 @@ function App() {
   useEffect(() => {
     (async () => {
       // setTotalOrders (await getTotal());
-      const {total, monthlyTotal, inProgressTotal, revenue, latestOrders} = await getData();
+      const {total, monthlyTotal, inProgressTotal, revenue, latestOrders} = await getDashboardStats();
       setTotalOrders(total);
       setMonthlyTotal(monthlyTotal);
       setInProgressTotal(inProgressTotal);

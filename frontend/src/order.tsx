@@ -1,4 +1,4 @@
-import { OrderFields, OrderStatuses } from "./api";
+import { OrderFields, OrderStatuses } from "../../backend/src/api";
 
 
 const statusMap: {[Status in OrderStatuses]: string} = {

@@ -1,10 +1,17 @@
 import express, { Express, Request, Response } from 'express';
+import dotenv from "dotenv";
+import { getData } from './api';
+
+dotenv.config();
 
 const app: Express = express();
 const port = 3001
 
-app.get('/', (req: Request, res: Response) => {
-  res.send({foo: "bar"});
+app.get('/dashboard-stats', async (req: Request, res: Response) => {
+  console.log("request received");
+  const data = await getData();
+  console.log("response sent", {data});
+  res.send(data);
 });
 
 app.listen(port, () => {
