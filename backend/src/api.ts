@@ -38,6 +38,8 @@ type OrderResponseSchema = {
 export const getData = async () => {
 
     const sort =  [{field: "order_placed", direction: "desc"}];
+
+    console.log({authHeader});
     const response = await axios.post(base + "/orders/listRecords", {
         sort
     },{

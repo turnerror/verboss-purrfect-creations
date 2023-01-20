@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: node-base
+    volumes:
+      - ./backend/src:/home/node/app/src
+      - ./backend/nodemon.json:/home/node/app/nodemon.json
+    container_name: node
+    environment:
+      AIRTABLE_BEARER_TOKEN: ${AIRTABLE_BEARER_TOKEN}
+    expose:
+      - '3001'
+    ports:
+      - '3001:3001'
+    command: npm run start:dev
