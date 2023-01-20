@@ -6,7 +6,7 @@ COPY ./backend/package*.json ./
 
 RUN npm i
 
-COPY . .
+COPY ./backend .
 
 
 FROM node-base as production
@@ -29,7 +29,7 @@ RUN npm install --silent
 RUN npm install react-scripts@3.4.1 -g --silent
 
 # add app
-COPY . ./
+COPY ./frontend ./
 
 # start app
 CMD ["npm", "start"]
