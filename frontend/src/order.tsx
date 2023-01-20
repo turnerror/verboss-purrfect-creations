@@ -1,5 +1,4 @@
-import { OrderFields, OrderStatuses } from "../../backend/src/api";
-
+import { OrderFields, OrderStatuses } from "./order.types";
 
 const statusMap: {[Status in OrderStatuses]: string} = {
     in_progress: "In Progress",

@@ -1,9 +1,10 @@
 import axios from 'axios';
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { getDashboardStats, Order as IOrder } from './api';
-import './App.css';
+import { getDashboardStats} from './api';
+import './app.css';
 import { Order } from './order';
+import { Order as IOrder } from './order.types';
 
 function App() {
 
