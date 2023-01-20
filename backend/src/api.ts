@@ -1,6 +1,7 @@
 import axios from "axios";
 import moment from "moment";
 import dotenv from "dotenv";
+import { Order, OrderFields, OrderResponseSchema } from "./order.types";
 
 dotenv.config();
 
@@ -12,65 +13,56 @@ const authHeader = {
         Authorization: "Bearer " + token
     };
 
-
-export type OrderStatuses = "in_progress" | "cancelled" | "placed" | "shipped";
-
-export type OrderFields = {
-order_id: number,
-order_placed: string,
-product_name: string,
-price: number,
-first_name: string,
-last_name: string,
-address: string,
-email: string,
-order_status: OrderStatuses
-}
-
-export type Order = {id: string, createdTime: string, fields: OrderFields};
-
-type OrderResponseSchema = {
-    records: Order[],
-    offset: string,
-
-}
-
 export const getData = async () => {
-
     const sort =  [{field: "order_placed", direction: "desc"}];
 
-    console.log({authHeader});
-    const response = await axios.post(base + "/orders/listRecords", {
-        sort
-    },{
-    headers: authHeader
-});
-
+    const response = await axios.post(
+        base + "/orders/listRecords",
+        { sort },
+        { headers: authHeader }
+    );
+    
     let orders: Order[] = response.data.records;
+    console.log("check", orders[0].createdTime);
 
     let nextPageOffset = response.data.offset;
 
     while(nextPageOffset) {
-        const response = await axios.post<OrderResponseSchema>(base + "/orders/listRecords",{sort, offset: nextPageOffset}, {headers: authHeader} );
+        const response = await axios.post<OrderResponseSchema>(
+            base + "/orders/listRecords",
+            {sort, offset: nextPageOffset},
+            {headers: authHeader}
+        );
 
         nextPageOffset = response.data.offset;
 
         orders = [...orders, ...response.data.records];
-
     }
-
-    const oneMonthAgo = moment().subtract(1, "M");
-
-    const thisMonthOrders = orders.filter((order) => {
-        const timeOfOrder = moment(order.fields.order_placed, "YYYY-MM-DD");
-
-        return timeOfOrder.isSameOrAfter(oneMonthAgo);
-    });
 
     const inProgressOrders = orders.filter((order) => {
         return order.fields.order_status === "in_progress";
     })
 
+    return {
+        total: orders.length,
+        monthlyTotal: filterThisMonthsOrders(orders).length,
+        latestOrders: orders.slice(0, 5),
+        inProgressTotal: inProgressOrders.length,
+        revenue: calcRevenue(orders)
+    };
+}
+
+export const filterThisMonthsOrders = (orders: Order[]) => {
+    const oneMonthAgo = moment().subtract(1, "M");
+
+    return orders.filter((order) => {
+        const timeOfOrder = moment(order.fields.order_placed, "YYYY-MM-DD");
+
+        return timeOfOrder.isSameOrAfter(oneMonthAgo);
+    });
+}
+
+export const calcRevenue = (orders: Order[]) => {
     let revenue = 0;
 
     for (const order of orders) {
@@ -79,13 +71,7 @@ export const getData = async () => {
         }
     }
 
-    return {
-        total: orders.length,
-        monthlyTotal: thisMonthOrders.length,
-        latestOrders: orders.slice(0, 5),
-        inProgressTotal: inProgressOrders.length,
-        revenue: +revenue.toFixed(2)
-    };
+    return +revenue.toFixed(2);
 }
 
 export const createOrder = async () => {
@@ -104,8 +90,6 @@ export const createOrder = async () => {
     const response  = await axios.post(base + "/Orders", {records: [{
         fields: newOrder,
     }]}, {headers: {...authHeader, "Content-Type": "application/json"}});
-
-    console.log({createOrderRes: response})
 
     return response.data;
 }
