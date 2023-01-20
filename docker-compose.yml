@@ -17,3 +17,15 @@ services:
     ports:
       - '3001:3001'
     command: npm run start:dev
+
+  react:
+    container_name: react
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: react-base
+    volumes:
+      - './frontend:/app'
+      - '/frontend/node_modules'
+    ports:
+      - 3000:3000
